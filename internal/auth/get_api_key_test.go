@@ -8,22 +8,22 @@ import (
 )
 
 func TestGetAPIKey(t *testing.T) {
-	tests := []struct{
-		key string
-		value string
-		expect string
+	tests := []struct {
+		key       string
+		value     string
+		expect    string
 		expectErr string
 	}{
 		{
 			expectErr: "no authorization header",
 		},
 		{
-			key: "Authorization",
+			key:       "Authorization",
 			expectErr: "no authorization header",
 		},
 		{
-			key: "Authorization",
-			value: "-",
+			key:       "Authorization",
+			value:     "-",
 			expectErr: "malformed authorization header",
 		},
 		{
@@ -40,13 +40,13 @@ func TestGetAPIKey(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		t.Run(fmt.Sprintf("TestGetAPIKEy Case #%v:", i), func(t *testing.T){
+		t.Run(fmt.Sprintf("TestGetAPIKEy Case #%v:", i), func(t *testing.T) {
 			header := http.Header{}
 			header.Add(test.key, test.value)
 
 			output, err := GetAPIKey(header)
-			if err != nil{
-				if strings.Contains(err.Error(), test.expectErr){
+			if err != nil {
+				if strings.Contains(err.Error(), test.expectErr) {
 					return
 				}
 				t.Errorf("Unexpected: TestGetAPIKey:%v\n", err)
