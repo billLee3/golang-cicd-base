@@ -17,4 +17,4 @@ jobs:
           go-version: "1.25.1"
 
       - name: Build Go Binary
-        run: .scripts/buildprod.sh
+        run: scripts/buildprod.sh
