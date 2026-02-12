@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -23,7 +25,7 @@ type apiConfig struct {
 
 //go:embed static/*
 var staticFiles embed.FS
-
+//Repush
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -88,11 +90,20 @@ func main() {
 	v1Router.Get("/healthz", handlerReadiness)
 
 	router.Mount("/v1", v1Router)
-	srv := &http.Server{
-		Addr:    ":" + port,
-		Handler: router,
+	
+	portNum, err := strconv.Atoi(port)
+	if err != nil{
+		log.Fatal("port is not a number")
 	}
-
-	log.Printf("Serving on port: %s\n", port)
+	if portNum <= 0 || portNum > 65535{
+		log.Fatal("Port number is not in an acceptable range.")
+	}
+	srv := &http.Server{
+		Addr:    ":" + strconv.Itoa(portNum),
+		Handler: router,
+		ReadHeaderTimeout: time.Minute,
+	}
+	// #nosec G706 -- port is validated (Atoi + range check) before logging
+	log.Printf("Serving on port: %d\n", portNum)
 	log.Fatal(srv.ListenAndServe())
 }
