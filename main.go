@@ -25,7 +25,8 @@ type apiConfig struct {
 
 //go:embed static/*
 var staticFiles embed.FS
-//Repush
+
+// Repush
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -90,17 +91,17 @@ func main() {
 	v1Router.Get("/healthz", handlerReadiness)
 
 	router.Mount("/v1", v1Router)
-	
+
 	portNum, err := strconv.Atoi(port)
-	if err != nil{
+	if err != nil {
 		log.Fatal("port is not a number")
 	}
-	if portNum <= 0 || portNum > 65535{
+	if portNum <= 0 || portNum > 65535 {
 		log.Fatal("Port number is not in an acceptable range.")
 	}
 	srv := &http.Server{
-		Addr:    ":" + strconv.Itoa(portNum),
-		Handler: router,
+		Addr:              ":" + strconv.Itoa(portNum),
+		Handler:           router,
 		ReadHeaderTimeout: time.Minute,
 	}
 	// #nosec G706 -- port is validated (Atoi + range check) before logging
